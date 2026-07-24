@@ -1,0 +1,65 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: AddEmployee.spec.ts >> should add a new employee
+- Location: tests\AddEmployee.spec.ts:8:5
+
+# Error details
+
+```
+Error: expect(locator).toBeVisible() failed
+
+Locator:  getByRole('heading', { name: 'Dashboard' })
+Expected: visible
+Received: undefined
+Timeout:  5000ms
+
+Call log:
+  - Expect "toBeVisible" with timeout 5000ms
+  - waiting for getByRole('heading', { name: 'Dashboard' })
+    - waiting for navigation to finish...
+
+```
+
+# Test source
+
+```ts
+  1  | import {test, expect} from '@playwright/test';
+  2  | import { PageManager } from '../pages/PageManager';
+  3  | import testData from '../testData/testData.json';
+  4  | import { Helper } from '../utility/Helper';
+  5  | import { ExelUtils } from '../utility/ExcelUtils';
+  6  | 
+  7  | 
+  8  | test('should add a new employee', async({page}) =>{
+  9  | 
+  10 | const PM = new PageManager(page);
+  11 | const empData = Helper.generateData();
+  12 | 
+  13 | console.log(empData);
+  14 | //Go to Login page
+  15 | await page.goto('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login');
+  16 | await PM.loginPage.login(testData.username, testData.password);
+> 17 | await expect(PM.dashboardPage.dashboardHeading).toBeVisible();
+     |                                                 ^ Error: expect(locator).toBeVisible() failed
+  18 | 
+  19 | const employeeId= await PM.pimPage.addEmployee(empData.firstName,  empData.lastName);
+  20 | const filepath = './testData/Employee.xlsx'
+  21 | const sheetName = 'Employees';
+  22 | 
+  23 |  await ExelUtils.writeEmployeeData(
+  24 |     filepath,
+  25 |     sheetName,
+  26 |     empData.firstName,
+  27 |     empData.lastName,
+  28 |     employeeId
+  29 |   );
+  30 | 
+  31 | 
+  32 | })
+```

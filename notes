@@ -1,0 +1,31 @@
+
+
+//Framedwork-
+//What is Framework
+//A Framework is a standard project structure created to manage automation scripts in reusable, 
+// maintenable, and scalable ways
+
+
+//POM- page object model
+//loginPage.ts
+//dashboardPage.ts 
+//AddEmployeePage.ts
+
+//Page Manager---
+
+//test Data management
+// json 
+//excel -- add excel dependencies by using cmd-- npm install xlsx
+//write a code t handle excel data
+
+
+
+//Test Data geneaartion by using faker library
+//----------------------------------------------------------------------------------------
+
+//Git and Git hub works in automation framework
+//What is git
+//GitHub ---
+
+
+
