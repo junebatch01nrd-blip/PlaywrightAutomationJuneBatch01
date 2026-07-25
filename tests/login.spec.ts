@@ -1,10 +1,10 @@
 import {test, expect} from '@playwright/test';
-import { LoginPage } from '../Pages/LoginPage';
+import { LoginPage } from '../pages/LoginPage';
 import { DashboardPage } from '../pages/DashboardPage';
 import testData from '../testData/testData.json';
 import { ExelUtils } from '../utility/ExcelUtils';
 
-test('valid login', async({page}) =>{
+test('valid login', ({tag: '@smoke'}), async({page}) =>{
 
 const loginPage = new LoginPage(page)
 const dashboardPage = new DashboardPage(page)
