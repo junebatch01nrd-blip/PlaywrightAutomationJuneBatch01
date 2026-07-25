@@ -1,6 +1,0 @@
-{
-  firstName: 'Orlo',
-  lastName: 'Dickens',
-  middleName: 'Xena',
-  number: 9568
-}

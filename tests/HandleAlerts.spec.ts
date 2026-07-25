@@ -24,7 +24,7 @@
 import {test, expect} from '@playwright/test';
 
 
-test('@Smoke handle simple alert', async({page}) => {
+test('handle simple alert', async({page}) => {
 
 await page.goto('/alerts');
 
@@ -42,7 +42,7 @@ await page.waitForTimeout(5000);
 });
 
 
-test('@Regression confirm alert', async({page}) => {
+test('confirm alert', async({page}) => {
 
 await page.goto('https://letcode.in/alert');
 
