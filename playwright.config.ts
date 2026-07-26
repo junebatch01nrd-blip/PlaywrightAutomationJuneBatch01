@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const isCI = typeof process !== 'undefined' && !!process.env?.CI;
 
 export default defineConfig({
   testDir: './tests',
@@ -12,10 +13,10 @@ export default defineConfig({
   /* Run tests in files in parallel */
   fullyParallel: true,
   retries: 1,
-  workers: 2,
+  workers: isCI ? 1 : 2,
 
   reporter: [
-    ['html', {open:'never'}],
+    ['html', { open: 'never', outputFolder: 'playwright-report' }],
     ['line'],
     ['junit', { outputFile: 'test-results/results.xml' }],
     ['allure-playwright',
@@ -40,7 +41,7 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chorme'] },
+      use: { ...devices['Desktop Chrome'] },
     },
 
 
