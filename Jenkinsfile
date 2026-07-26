@@ -6,100 +6,106 @@ pipeline {
     }
 
     triggers {
+        // Check GitHub every 2 minutes
         pollSCM('H/2 * * * *')
     }
 
     options {
         timestamps()
         timeout(time: 60, unit: 'MINUTES')
-        skipDefaultCheckout(false)
     }
 
     stages {
-        stage('Clean workspace') {
+
+        stage('Verify Workspace') {
             steps {
-                dir('Playwright_Automation') {
-                    bat '''
-                        IF EXIST allure-results rmdir /S /Q allure-results
-                        IF EXIST allure-report rmdir /S /Q allure-report
-                        IF EXIST playwright-report rmdir /S /Q playwright-report
-                        IF EXIST test-results rmdir /S /Q test-results
-                    '''
-                }
+                bat '''
+                echo ===============================
+                echo Current Directory
+                cd
+
+                echo ===============================
+                echo Project Files
+                dir
+
+                echo ===============================
+                echo Test Files
+                dir tests
+                '''
             }
         }
 
-        stage('Install dependencies') {
+        stage('Clean Reports') {
             steps {
-                dir('Playwright_Automation') {
-                    bat 'npm install'
-                }
+                bat '''
+                IF EXIST allure-results rmdir /S /Q allure-results
+                IF EXIST allure-report rmdir /S /Q allure-report
+                IF EXIST playwright-report rmdir /S /Q playwright-report
+                IF EXIST test-results rmdir /S /Q test-results
+                '''
             }
         }
 
-        stage('Install Playwright browsers') {
+        stage('Install Dependencies') {
             steps {
-                dir('Playwright_Automation') {
-                    bat 'npx playwright install'
-                }
+                bat 'npm install'
             }
         }
 
-        stage('Run smoke tests') {
+        stage('Install Playwright Browsers') {
             steps {
-                dir('Playwright_Automation') {
-                    bat 'npx playwright test --grep "@smoke"'
-                }
+                bat 'npx playwright install'
             }
         }
 
-        stage('Generate Allure report') {
+        stage('Run Smoke Tests') {
             steps {
-                dir('Playwright_Automation') {
-                    bat '''
-                        IF EXIST allure-results (
-                            IF EXIST allure-report rmdir /S /Q allure-report
-                            npx allure generate allure-results --clean -o allure-report
-                        ) ELSE (
-                            echo No allure results found.
-                        )
-                    '''
-                }
+                bat 'npx playwright test --grep "@smoke"'
+            }
+        }
+
+        stage('Generate Allure Report') {
+            steps {
+                bat 'npx allure generate allure-results --clean -o allure-report'
             }
         }
     }
 
     post {
+
         always {
-            dir('Playwright_Automation') {
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'playwright-report',
-                    reportFiles: 'index.html',
-                    reportName: 'Playwright HTML Report'
-                ])
 
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'allure-report',
-                    reportFiles: 'index.html',
-                    reportName: 'Allure Report'
-                ])
+            publishHTML(target: [
+                reportName: 'Playwright HTML Report',
+                reportDir: 'playwright-report',
+                reportFiles: 'index.html',
+                keepAll: true,
+                alwaysLinkToLastBuild: true,
+                allowMissing: true
+            ])
 
-                junit 'test-results/results.xml'
-            }
+            allure([
+                includeProperties: false,
+                jdk: '',
+                results: [[path: 'allure-results']]
+            ])
         }
 
         success {
-            echo 'Smoke tests completed successfully.'
+            echo '====================================='
+            echo 'Pipeline executed successfully.'
+            echo '====================================='
         }
 
         failure {
-            echo 'Smoke tests failed. Check the reports and logs for details.'
+            echo '====================================='
+            echo 'Pipeline execution failed.'
+            echo 'Check Console Output and Reports.'
+            echo '====================================='
+        }
+
+        cleanup {
+            cleanWs()
         }
     }
 }
