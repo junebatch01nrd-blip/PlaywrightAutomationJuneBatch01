@@ -1,7 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const isCI = typeof process !== 'undefined' && !!process.env?.CI;
-
 export default defineConfig({
   testDir: './tests',
 
@@ -13,7 +11,7 @@ export default defineConfig({
   /* Run tests in files in parallel */
   fullyParallel: true,
   retries: 1,
-  workers: isCI ? 1 : 2,
+  workers: process.env.CI ? 4 : 2,
 
   reporter: [
     ['html', { open: 'never', outputFolder: 'playwright-report' }],
