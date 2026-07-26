@@ -21,7 +21,7 @@ import { test, expect } from '@playwright/test';
    Description: Demonstrates how to interact with a basic dropdown menu
    where all options are predefined in the HTML <select> element
 */
-test('Handle Static Dropdown using select tag',({tag:'@smoke'}), async ({ page }) => {
+test('Handle Static Dropdown using select tag', async ({ page }) => {
   // Step 1: Navigate to the test website
   await page.goto('https://letcode.in/test');
 
