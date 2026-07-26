@@ -16,25 +16,6 @@ pipeline {
     }
 
     stages {
-
-        stage('Verify Workspace') {
-            steps {
-                bat '''
-                echo ===============================
-                echo Current Directory
-                cd
-
-                echo ===============================
-                echo Project Files
-                dir
-
-                echo ===============================
-                echo Test Files
-                dir tests
-                '''
-            }
-        }
-
         stage('Clean Reports') {
             steps {
                 bat '''
@@ -63,18 +44,10 @@ pipeline {
                 bat 'npx playwright test --grep "@smoke"'
             }
         }
-
-        stage('Generate Allure Report') {
-            steps {
-                bat 'npx allure generate allure-results --clean -o allure-report'
-            }
-        }
     }
 
     post {
-
         always {
-
             publishHTML(target: [
                 reportName: 'Playwright HTML Report',
                 reportDir: 'playwright-report',
@@ -92,16 +65,16 @@ pipeline {
         }
 
         success {
-            echo '====================================='
+            echo '=================================' 
             echo 'Pipeline executed successfully.'
-            echo '====================================='
+            echo '================================='
         }
 
         failure {
-            echo '====================================='
+            echo '================================='
             echo 'Pipeline execution failed.'
             echo 'Check Console Output and Reports.'
-            echo '====================================='
+            echo '================================='
         }
 
         cleanup {
